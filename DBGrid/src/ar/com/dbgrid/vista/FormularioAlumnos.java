@@ -41,7 +41,8 @@ public class FormularioAlumnos  extends JPanel  implements ActionListener {
      * Crea la ventana con todos sus componentes dentro y la visualiza
      *
      */
-    public FormularioAlumnos (){
+    public FormularioAlumnos ()
+    {
     	super(new BorderLayout());
     	this.add(new JScrollPane(this.tabla));
     	
@@ -72,18 +73,23 @@ public class FormularioAlumnos  extends JPanel  implements ActionListener {
     
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e) 
+    {
     	   Object fuente = e.getSource();
     	   if (fuente==agregar)
     		   JOptionPane.showMessageDialog(null, "Agregar");
-    	   else if (fuente==actualizar) {
+    	  
+    	   else if (fuente==actualizar) 
+    	   {
     		    DefaultTableModel modelo = new DefaultTableModel();
    				AlumnoDao alumnosResultSet = new AlumnoDao();	
 				ConversorResultSetADefaultTableModel.rellena(alumnosResultSet.getAllAlumnos(), modelo);
 				this.tomaDatos(modelo);
-    	   }else if (fuente==verFinales){
-    		  
-    		  if (this.tabla.getSelectedRowCount() == 1) {
+    	   }
+    	   else if (fuente==verFinales)
+    	   {    		  
+    		  if (this.tabla.getSelectedRowCount() == 1) 
+    		  {
     			  DefaultTableModel tm = (DefaultTableModel) this.tabla.getModel();
     			  new FormularioFinales((int)tm.getValueAt(this.tabla.getSelectedRow(), 0),(String)tm.getValueAt(this.tabla.getSelectedRow(), 1));
     		  }

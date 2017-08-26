@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -18,7 +19,8 @@ import javax.swing.table.DefaultTableModel;
 import ar.com.dbgrid.dao.FinalesDao;
 import ar.com.dbgrid.modelo.ConversorResultSetADefaultTableModel;
 
-public class FormularioFinales  extends JFrame  implements ActionListener{
+public class FormularioFinales  extends JFrame  implements ActionListener
+{
 	
 	/**
 	 * 
@@ -31,7 +33,10 @@ public class FormularioFinales  extends JFrame  implements ActionListener{
     private JButton agregar = new JButton("Agregar Final");
     private JButton borrar = new JButton("Borrar Final");
 
-	public FormularioFinales(int idAlumno, String nombre) {
+    JComboBox<String> combo = new JComboBox<>();
+    
+	public FormularioFinales(int idAlumno, String nombre) 
+	{
 		
 		this.idAlumno = idAlumno;
 		this.setNombre(nombre);
@@ -44,7 +49,8 @@ public class FormularioFinales  extends JFrame  implements ActionListener{
 	}
 
 	
-	private void createUserInterface() {
+	private void createUserInterface() 
+	{
 		
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.add(new JScrollPane(this.table));
@@ -69,23 +75,35 @@ public class FormularioFinales  extends JFrame  implements ActionListener{
 		this.setVisible(true);
 	}
 	
-	public int getIdAlumno() {
+	public int getIdAlumno()
+	{
 		return idAlumno;
 	}
 
-	public void setIdAlumno(int idAlumno) {
+	public void setIdAlumno(int idAlumno) 
+	{
 		this.idAlumno = idAlumno;
 	}
 	
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e)
+    {
     	   Object fuente = e.getSource();
+    	   
     	   if (fuente==agregar)
-    		   JOptionPane.showMessageDialog(null, "Agregar");
-    	   else if (fuente==borrar) {
+    	   {
+    		   //JOptionPane.showMessageDialog(null, "Agregar");
     		   
-     		  if (this.table.getSelectedRowCount() == 1) {
-     			 if (JOptionPane.showConfirmDialog(null, "Seguro desea borrar el final?", "WARNING", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+    		   new FormularioAgregarFinal(idAlumno, nombre);
+    	   }
+    	   
+    	   else if (fuente==borrar) 
+    	   {
+    		   
+     		  if (this.table.getSelectedRowCount() == 1) 
+     		  {
+     			 if (JOptionPane.showConfirmDialog(null, "Seguro desea borrar el final?", "WARNING", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+     			 {
      				 FinalesDao  finales = new FinalesDao();
      				 DefaultTableModel modelo = (DefaultTableModel) this.table.getModel();
      				 int r = finales.borrarFinal(this.getIdAlumno(), (int)modelo.getValueAt(this.table.getSelectedRow(), 0), (BigDecimal)modelo.getValueAt(this.table.getSelectedRow(), 2));
@@ -94,7 +112,6 @@ public class FormularioFinales  extends JFrame  implements ActionListener{
     		  }
     
     	   }
-    	
     }
 
 
