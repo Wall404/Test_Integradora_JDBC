@@ -1,25 +1,25 @@
 package ar.com.dbgrid.vista;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
+import java.math.BigDecimal;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
-import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 import ar.com.dbgrid.dao.FinalesDao;
 import ar.com.dbgrid.modelo.ConversorResultSetACDefaultComboBox;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import javax.swing.SwingConstants;
-import java.awt.Component;
 
 public class FormularioAgregarFinal extends JFrame implements ActionListener
 {
@@ -56,6 +56,10 @@ public class FormularioAgregarFinal extends JFrame implements ActionListener
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setBounds(100, 100, 472, 233);
 		this.setTitle("Agregar Final");
+		
+		JPanel panel_datos = new JPanel();
+		panel_datos.add(new JLabel("Legajo: " + this.getIdAlumno() + " - " + this.getNombre()));
+		this.add(panel_datos, BorderLayout.NORTH);
 		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -108,7 +112,15 @@ public class FormularioAgregarFinal extends JFrame implements ActionListener
 	    
 	    if(fuente == btnAceptar)
 	    {
-	        System.out.println("Agrega gatooo");
+	        FinalesDao f = new FinalesDao();
+	        String materia = (String) comboBox.getSelectedItem();
+	        int id_Materia = ConversorResultSetACDefaultComboBox.IDCampo(f.mostrarFinales(idAlumno), materia);
+	        String valor = textField.getText();
+	        BigDecimal nota = new BigDecimal(valor.replaceAll(",", ""));
+	        
+	        int id = (ConversorResultSetACDefaultComboBox.contarElementos(f.totalRegistros()) + 1);
+	        f.agregarFinal(id, idAlumno, id_Materia, nota);
+	        System.out.println("ID: " + id + " - " + "ID Alumno: " + idAlumno + " - " + "Materia: " + materia + " - " + "nota: " + valor);
 	    }
 	}
 	

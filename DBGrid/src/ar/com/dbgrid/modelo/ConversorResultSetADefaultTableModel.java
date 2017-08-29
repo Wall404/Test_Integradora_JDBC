@@ -2,7 +2,6 @@ package ar.com.dbgrid.modelo;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 
 import javax.swing.table.DefaultTableModel;
 

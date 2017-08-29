@@ -15,7 +15,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-
 import ar.com.dbgrid.dao.FinalesDao;
 import ar.com.dbgrid.modelo.ConversorResultSetADefaultTableModel;
 
@@ -32,8 +31,6 @@ public class FormularioFinales  extends JFrame  implements ActionListener
 	private JTable table = new JTable();
     private JButton agregar = new JButton("Agregar Final");
     private JButton borrar = new JButton("Borrar Final");
-
-    JComboBox<String> combo = new JComboBox<>();
     
 	public FormularioFinales(int idAlumno, String nombre) 
 	{

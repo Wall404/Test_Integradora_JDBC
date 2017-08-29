@@ -19,17 +19,6 @@ public class ConversorResultSetACDefaultComboBox
     		modelo.addElement(lista.get(i));
     	}
     	
-    	try 
-        {
-            while(rs.next())
-            {
-                lista.add(rs.getString("DESCRIPCION"));
-            }
-        } 
-        catch (SQLException e) 
-        {
-            e.printStackTrace();
-        }
     	return modelo;
     }
     
@@ -47,5 +36,48 @@ public class ConversorResultSetACDefaultComboBox
             e.printStackTrace();
         }
         return lista;
+    }
+    
+    public static int IDCampo(ResultSet rs, String campo)
+    {
+        int id = 1;
+        
+        try
+        {
+            while(rs.next())
+            {
+                if(rs.getString(2).equals(campo))
+                {
+                    return id;
+                }
+                else
+                {
+                    id++;
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return id;
+    }
+    
+    public static int contarElementos(final ResultSet rs)
+    {
+        int cont = 0;
+        
+        try
+        {
+            while (rs.next())
+            {
+                cont++;
+            }
+        }
+        catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return cont;
     }
 }

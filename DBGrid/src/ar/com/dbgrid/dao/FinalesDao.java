@@ -78,19 +78,14 @@ public class FinalesDao
 	public ResultSet mostrarFinales(int ID_ALUMNO)
 	{
 		Connection con = Conexion.getConnection();
-		//BigDecimal nota = new BigDecimal(4);
 		
-		String sql = "select * from MATERIA "/* + 
-				"inner join FINALES F on MATERIA.ID = F.ID_MATERIA " + 
-				"inner join ALUMNO A on A.ID = F.ID_ALUMNO " + 
-				"where F.NOTA < ?"*/;
+		String sql = "select * from MATERIA ";
 		
 		ResultSet r = null;				
 		try 
 		{
 			PreparedStatement p = con.prepareStatement(sql);
-			//p.setBigDecimal(1, nota);
-			//p.setInt(1, ID_ALUMNO);
+
 			
 			r = p.executeQuery();
 		} 
@@ -99,5 +94,46 @@ public class FinalesDao
 			e.printStackTrace();
 		}
 		return r;
+	}
+	
+	public void agregarFinal(int ID, int idAlumno, int ID_Materia, BigDecimal nota)
+	{
+	    Connection con = Conexion.getConnection();
+	    String q = "select ID from MATERIA where MATERIA.DESCRIPCION = ?";
+	    String query = "INSERT INTO FINALES (ID, ID_ALUMNO, ID_MATERIA, NOTA) VALUES(?, ? , ?, ?)";
+	    ResultSet r = null;
+	    try
+	    {
+	        
+	        PreparedStatement p = con.prepareStatement(query);
+	        p.setInt(1, ID);
+	        p.setInt(2, idAlumno);
+	        p.setInt(3, ID_Materia);
+	        p.setBigDecimal(4, nota);
+
+	        p.executeUpdate();
+	    } 
+	    catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+	}
+	
+	public ResultSet totalRegistros()
+	{
+	    Connection con = Conexion.getConnection();
+	    
+	    String q = "select * from FINALES";
+	    ResultSet r = null;
+	    try
+	    {
+	        PreparedStatement p = con.prepareStatement(q);
+	        r = p.executeQuery();
+	    }
+	    catch(SQLException e)
+	    {
+	        e.printStackTrace();
+	    }
+        return r;
 	}
 }
