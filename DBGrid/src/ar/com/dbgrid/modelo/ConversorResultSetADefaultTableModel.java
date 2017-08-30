@@ -31,8 +31,7 @@ public class ConversorResultSetADefaultTableModel
      * @param rs El resultado de la consulta a base de datos
      * @param modelo El DefaultTableModel que queremos rellenar.
      */
-    private static void anhadeFilasDeDatos(ResultSet rs,
-            DefaultTableModel modelo)
+    private static void anhadeFilasDeDatos(ResultSet rs, DefaultTableModel modelo)
     {
  
         try
@@ -102,4 +101,5 @@ public class ConversorResultSetADefaultTableModel
 		}
 
     }
+    
 }

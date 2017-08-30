@@ -1,33 +1,34 @@
 package ar.com.dbgrid.vista;
 
 import java.awt.BorderLayout;
-
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.JButton;
-
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-
 import javax.swing.table.DefaultTableModel;
 
 import ar.com.dbgrid.dao.AlumnoDao;
 import ar.com.dbgrid.modelo.ConversorResultSetADefaultTableModel;
+import ar.com.dbgrid.modelo.Final;
 
 
 
-public class FormularioAlumnos  extends JPanel  implements ActionListener {
+public class FormularioAlumnos  extends JPanel  implements ActionListener, Observer
+{
 
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
 	
     private JTable tabla = new JTable();
   
@@ -41,7 +42,8 @@ public class FormularioAlumnos  extends JPanel  implements ActionListener {
      * Crea la ventana con todos sus componentes dentro y la visualiza
      *
      */
-    public FormularioAlumnos (){
+    public FormularioAlumnos ()
+    {
     	super(new BorderLayout());
     	this.add(new JScrollPane(this.tabla));
     	
@@ -57,6 +59,7 @@ public class FormularioAlumnos  extends JPanel  implements ActionListener {
     	this.add(operaciones, BorderLayout.SOUTH);
     	
     	this.tabla.setPreferredScrollableViewportSize(new Dimension(500, 175));
+    	FormularioFinales.getObserver().addObserver(this);
     }
 
     
@@ -72,23 +75,39 @@ public class FormularioAlumnos  extends JPanel  implements ActionListener {
     
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e) 
+    {
     	   Object fuente = e.getSource();
     	   if (fuente==agregar)
     		   JOptionPane.showMessageDialog(null, "Agregar");
-    	   else if (fuente==actualizar) {
-    		    DefaultTableModel modelo = new DefaultTableModel();
-   				AlumnoDao alumnosResultSet = new AlumnoDao();	
-				ConversorResultSetADefaultTableModel.rellena(alumnosResultSet.getAllAlumnos(), modelo);
-				this.tomaDatos(modelo);
-    	   }else if (fuente==verFinales){
-    		  
-    		  if (this.tabla.getSelectedRowCount() == 1) {
+    	  
+    	   else if (fuente==actualizar) 
+    	   {
+    		    this.actualizarGrilla();
+    	   }
+    	   else if (fuente==verFinales)
+    	   {    		  
+    		  if (this.tabla.getSelectedRowCount() == 1) 
+    		  {
     			  DefaultTableModel tm = (DefaultTableModel) this.tabla.getModel();
     			  new FormularioFinales((int)tm.getValueAt(this.tabla.getSelectedRow(), 0),(String)tm.getValueAt(this.tabla.getSelectedRow(), 1));
     		  }
     	   }
-    	
     }
     
+    public void update(Observable arg0, Object arg1)
+    {
+    	if(arg1 instanceof Final)
+    	{
+    		this.actualizarGrilla();
+    	}
+    }
+    
+    private void actualizarGrilla()
+    {
+    	DefaultTableModel modelo = new DefaultTableModel();
+		AlumnoDao alumnosResultSet = new AlumnoDao();	
+		ConversorResultSetADefaultTableModel.rellena(alumnosResultSet.getAllAlumnos(), modelo);
+		this.tomaDatos(modelo);
+    }
 }
