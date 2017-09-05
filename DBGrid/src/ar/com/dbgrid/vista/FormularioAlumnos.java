@@ -16,6 +16,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import ar.com.dbgrid.dao.AlumnoDao;
+import ar.com.dbgrid.modelo.Alumno;
 import ar.com.dbgrid.modelo.ConversorResultSetADefaultTableModel;
 import ar.com.dbgrid.modelo.Final;
 
@@ -106,7 +107,7 @@ public class FormularioAlumnos extends JPanel implements ActionListener, Observe
     	{
     		this.actualizarGrilla();
     	}
-    	else if( arg1 instanceof AlumnoDao)
+    	else if(arg1 instanceof Alumno)
     	{
     	    this.actualizarGrilla();
     	}

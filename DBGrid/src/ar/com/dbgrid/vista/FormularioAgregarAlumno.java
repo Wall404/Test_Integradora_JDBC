@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import ar.com.dbgrid.dao.AlumnoDao;
+import ar.com.dbgrid.modelo.Alumno;
 import ar.com.dbgrid.modelo.finalObservable;
 
 import javax.swing.JTextField;
@@ -95,10 +96,15 @@ public class FormularioAgregarAlumno extends JFrame implements ActionListener
         if(e.getSource() == btnAceptar)
         {
             AlumnoDao a = new AlumnoDao();
-            a.agregarAlumno(Apellido_Alumno.getText() + ", " + Nombre_Alumno.getText());
+            Alumno al = new Alumno();
+            al.setId(a.MaxID() + 1);
+            al.setNombre(Apellido_Alumno.getText() + ", " + Nombre_Alumno.getText());
+            
+            a.agregarAlumno(al);
             this.dispose();
+            
             OBSERVER.setChanged();
-            OBSERVER.notifyObservers(a);
+            OBSERVER.notifyObservers(al);
         }
     }
     

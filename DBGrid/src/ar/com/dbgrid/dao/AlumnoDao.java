@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import ar.com.dbgrid.database.Conexion;
+import ar.com.dbgrid.modelo.Alumno;
 
 public class AlumnoDao {
 
@@ -51,7 +52,7 @@ public class AlumnoDao {
         return valor;
     }
 	
-	public void agregarAlumno(String nombre)
+	public void agregarAlumno(Alumno alumno)
 	{
 	    Connection con = Conexion.getConnection();
 	    
@@ -60,8 +61,8 @@ public class AlumnoDao {
 	    try
         {
             PreparedStatement p = con.prepareStatement(q);
-            p.setInt(1, (MaxID() + 1));
-            p.setString(2, nombre);
+            p.setInt(1, alumno.getId());
+            p.setString(2, alumno.getNombre());
             p.executeUpdate();
         } 
 	    catch (SQLException e)
