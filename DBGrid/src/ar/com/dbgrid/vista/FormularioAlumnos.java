@@ -21,7 +21,7 @@ import ar.com.dbgrid.modelo.Final;
 
 
 
-public class FormularioAlumnos  extends JPanel  implements ActionListener, Observer
+public class FormularioAlumnos extends JPanel implements ActionListener, Observer
 {
 
     /**
@@ -60,6 +60,8 @@ public class FormularioAlumnos  extends JPanel  implements ActionListener, Obser
     	
     	this.tabla.setPreferredScrollableViewportSize(new Dimension(500, 175));
     	FormularioFinales.getObserver().addObserver(this);
+    	FormularioAgregarFinal.getObserver().addObserver(this);
+    	FormularioAgregarAlumno.getObserver().addObserver(this);
     }
 
     
@@ -79,7 +81,10 @@ public class FormularioAlumnos  extends JPanel  implements ActionListener, Obser
     {
     	   Object fuente = e.getSource();
     	   if (fuente==agregar)
-    		   JOptionPane.showMessageDialog(null, "Agregar");
+    	   {
+//    	       JOptionPane.showMessageDialog(null, "Agregar");
+    	       new FormularioAgregarAlumno();
+    	   }
     	  
     	   else if (fuente==actualizar) 
     	   {
@@ -100,6 +105,10 @@ public class FormularioAlumnos  extends JPanel  implements ActionListener, Obser
     	if(arg1 instanceof Final)
     	{
     		this.actualizarGrilla();
+    	}
+    	else if( arg1 instanceof AlumnoDao)
+    	{
+    	    this.actualizarGrilla();
     	}
     }
     

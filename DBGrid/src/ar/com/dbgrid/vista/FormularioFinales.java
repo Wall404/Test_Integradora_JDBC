@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -20,7 +22,7 @@ import ar.com.dbgrid.modelo.ConversorResultSetADefaultTableModel;
 import ar.com.dbgrid.modelo.Final;
 import ar.com.dbgrid.modelo.finalObservable;
 
-public class FormularioFinales  extends JFrame  implements ActionListener
+public class FormularioFinales extends JFrame implements ActionListener, Observer
 {
 	
 	/**
@@ -41,10 +43,9 @@ public class FormularioFinales  extends JFrame  implements ActionListener
 		this.idAlumno = idAlumno;
 		this.setNombre(nombre);
 		createUserInterface();
-		DefaultTableModel modelo = new DefaultTableModel();
-		FinalesDao finalesResultSet = new FinalesDao();
-		ConversorResultSetADefaultTableModel.rellena(finalesResultSet.getAllFinlasByAlumno(this.idAlumno), modelo);
-		this.table.setModel(modelo);
+		actualizarGrilla();
+		FormularioAgregarFinal.getObserver().addObserver(this);
+		
 		
 	}
 
@@ -91,10 +92,9 @@ public class FormularioFinales  extends JFrame  implements ActionListener
     	   Object fuente = e.getSource();
     	   
     	   if (fuente==agregar)
-    	   {
-    		   //JOptionPane.showMessageDialog(null, "Agregar");
-    		   
+    	   {    		   
     		   new FormularioAgregarFinal(idAlumno, nombre);
+    		   
     	   }
     	   
     	   else if (fuente==borrar) 
@@ -124,9 +124,28 @@ public class FormularioFinales  extends JFrame  implements ActionListener
     
     	   }
     }
+    
+    public void update(Observable arg0, Object arg1)
+    {
+        if(arg1 instanceof Final)
+        {
+            this.actualizarGrilla();
+        }
+    }
 
 
-	public static finalObservable getObserver()
+
+	private void actualizarGrilla()
+    {
+	    DefaultTableModel modelo = new DefaultTableModel();
+        FinalesDao finalesResultSet = new FinalesDao();
+        ConversorResultSetADefaultTableModel.rellena(finalesResultSet.getAllFinlasByAlumno(this.idAlumno), modelo);
+        this.table.setModel(modelo);
+        
+    }
+
+
+    public static finalObservable getObserver()
 	{
 		return OBSERVER;
 	}

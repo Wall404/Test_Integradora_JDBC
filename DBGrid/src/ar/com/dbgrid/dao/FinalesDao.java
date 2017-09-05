@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import ar.com.dbgrid.database.Conexion;
+import ar.com.dbgrid.modelo.Final;
 
 public class FinalesDao 
 {
@@ -78,13 +79,19 @@ public class FinalesDao
 	public ResultSet mostrarFinales(int ID_ALUMNO)
 	{
 		Connection con = Conexion.getConnection();
-		
-		String sql = "select * from MATERIA ";
+		int nota = 4;
+		String sql = "select m.DESCRIPCION from (select * from MATERIA) m "
+		        + "where m.ID not in (select f.ID_MATERIA from FINALES f "
+		        + "where f.ID_ALUMNO = ?)";
+		        /*"select m.descripcion from MATERIA m " +
+		        " join finales f on f.id_materia = m.id " +
+		        " where f.id_alumno = ? and f.nota < ?";*/
 		
 		ResultSet r = null;				
 		try 
 		{
 			PreparedStatement p = con.prepareStatement(sql);
+			p.setInt(1, ID_ALUMNO);
 
 			
 			r = p.executeQuery();
@@ -96,20 +103,19 @@ public class FinalesDao
 		return r;
 	}
 	
-	public void agregarFinal(int ID, int idAlumno, int ID_Materia, BigDecimal nota)
+	public void agregarFinal(int ID, Final fa)
 	{
 	    Connection con = Conexion.getConnection();
 	    String q = "select ID from MATERIA where MATERIA.DESCRIPCION = ?";
 	    String query = "INSERT INTO FINALES (ID, ID_ALUMNO, ID_MATERIA, NOTA) VALUES(?, ? , ?, ?)";
-	    ResultSet r = null;
 	    try
 	    {
 	        
 	        PreparedStatement p = con.prepareStatement(query);
 	        p.setInt(1, ID);
-	        p.setInt(2, idAlumno);
-	        p.setInt(3, ID_Materia);
-	        p.setBigDecimal(4, nota);
+	        p.setInt(2, fa.getId_alumno());
+	        p.setInt(3, fa.getId_materia());
+	        p.setBigDecimal(4, fa.getNota());
 
 	        p.executeUpdate();
 	    } 
@@ -119,21 +125,55 @@ public class FinalesDao
         }
 	}
 	
-	public ResultSet totalRegistros()
+	public int idMateria(String descripcion)
 	{
 	    Connection con = Conexion.getConnection();
 	    
-	    String q = "select * from FINALES";
+	    String q = "select m.id from MATERIA m\r\n " + 
+	            "join FINALES f on f.ID_MATERIA = m.ID\r\n " + 
+	            "where m.DESCRIPCION like ? ";
 	    ResultSet r = null;
+	    Integer valor = null;
 	    try
 	    {
 	        PreparedStatement p = con.prepareStatement(q);
+	        p.setString(1, descripcion);
 	        r = p.executeQuery();
+	        while(r.next())
+	        {
+	            valor = r.getInt(1);
+	        }
 	    }
 	    catch(SQLException e)
 	    {
 	        e.printStackTrace();
 	    }
-        return r;
+        return valor;
+	}
+	
+	public int MaxID()
+	{
+	    Connection con = Conexion.getConnection();
+	    
+	    String q = "select MAX (ID) from FINALES";
+	    ResultSet rs = null;
+	    Integer valor = null;
+	    
+	    try
+        {
+            PreparedStatement p = con.prepareStatement(q);
+            //p.setString(1, "ID");
+            rs = p.executeQuery();
+            while(rs.next())
+            {
+                valor = rs.getInt(1);
+            }
+        } 
+	    catch (SQLException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+	    return valor;
 	}
 }

@@ -7,6 +7,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+import java.util.Observer;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -20,6 +21,8 @@ import javax.swing.border.EmptyBorder;
 
 import ar.com.dbgrid.dao.FinalesDao;
 import ar.com.dbgrid.modelo.ConversorResultSetACDefaultComboBox;
+import ar.com.dbgrid.modelo.Final;
+import ar.com.dbgrid.modelo.finalObservable;
 
 public class FormularioAgregarFinal extends JFrame implements ActionListener
 {
@@ -27,14 +30,17 @@ public class FormularioAgregarFinal extends JFrame implements ActionListener
      * 
      */
     private static final long serialVersionUID = 1L;
+    private final static finalObservable OBSERVER = new finalObservable();
+    
     private int idAlumno;
     private String Nombre;
 
     private JPanel contentPane;
 	private JTextField textField;
 	private JComboBox<String> comboBox = new JComboBox<String>();
-	private JButton btnAceptar = new JButton("Aceptar");
-	private JButton btnBorrar = new JButton("Borrar");
+	private JButton btnAceptar1 = new JButton("Aceptar y Continuar");
+	private JButton btnAceptar2 = new JButton("Aceptar y Salir");
+	
 
 	public FormularioAgregarFinal(int idAlumno, String Nombre)
 	{
@@ -42,29 +48,26 @@ public class FormularioAgregarFinal extends JFrame implements ActionListener
 		this.setNombre(Nombre);
 
 		cargarForm();
+		actualizarCombo();
 		
-		FinalesDao f = new FinalesDao();
-        DefaultComboBoxModel<String> modelo = new DefaultComboBoxModel<>();
-        modelo = ConversorResultSetACDefaultComboBox.llenarCombo(f.mostrarFinales(idAlumno), modelo);
-        
-        this.comboBox.setModel(modelo);
 	}
 
 	
-	public void cargarForm() 
+	private void cargarForm() 
 	{
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setBounds(100, 100, 472, 233);
 		this.setTitle("Agregar Final");
 		
-		JPanel panel_datos = new JPanel();
-		panel_datos.add(new JLabel("Legajo: " + this.getIdAlumno() + " - " + this.getNombre()));
-		this.add(panel_datos, BorderLayout.NORTH);
 		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
+		
+		JPanel panel_datos = new JPanel();
+		panel_datos.add(new JLabel("Legajo: " + this.getIdAlumno() + " - " + this.getNombre()));
+		getContentPane().add(panel_datos, BorderLayout.NORTH);
 		
 		JPanel panel_Materias = new JPanel();
 		panel_Materias.setName("Materias");
@@ -88,17 +91,18 @@ public class FormularioAgregarFinal extends JFrame implements ActionListener
 		
 		textField = new JTextField();
 		textField.setHorizontalAlignment(SwingConstants.CENTER);
-		textField.setPreferredSize(new Dimension(8, 20));
+		textField.setPreferredSize(new Dimension(8, 15));
 		panel_Notas.add(textField);
 		textField.setColumns(3);
 		
 		JPanel panel = new JPanel();
 		contentPane.add(panel, BorderLayout.SOUTH);
 		
-		btnAceptar.addActionListener(this);
+		btnAceptar1.addActionListener(this);
+		btnAceptar2.addActionListener(this);
 		
-		panel.add(btnAceptar);
-		panel.add(btnBorrar);
+		panel.add(btnAceptar1);
+		panel.add(btnAceptar2);
 		
 		this.pack();
 		this.setVisible(true);
@@ -110,18 +114,41 @@ public class FormularioAgregarFinal extends JFrame implements ActionListener
 	{
 	    Object fuente =  e.getSource();
 	    
-	    if(fuente == btnAceptar)
+	    if(fuente == btnAceptar1)
 	    {
-	        FinalesDao f = new FinalesDao();
-	        String materia = (String) comboBox.getSelectedItem();
-	        int id_Materia = ConversorResultSetACDefaultComboBox.IDCampo(f.mostrarFinales(idAlumno), materia);
-	        String valor = textField.getText();
-	        BigDecimal nota = new BigDecimal(valor.replaceAll(",", ""));
-	        
-	        int id = (ConversorResultSetACDefaultComboBox.contarElementos(f.totalRegistros()) + 1);
-	        f.agregarFinal(id, idAlumno, id_Materia, nota);
-	        System.out.println("ID: " + id + " - " + "ID Alumno: " + idAlumno + " - " + "Materia: " + materia + " - " + "nota: " + valor);
+	        this.agregar();
 	    }
+	    else if(fuente == btnAceptar2)
+	    {
+	        this.agregar();
+	        this.dispose();
+	    }
+	}
+	
+	private void agregar()
+	{
+	    FinalesDao f = new FinalesDao();
+        
+        int id = f.MaxID() + 1;
+        String materia = (String) comboBox.getSelectedItem();
+        int id_Materia = f.idMateria(materia);
+        String valor = textField.getText();
+        BigDecimal nota = new BigDecimal(valor.replaceAll(",", ""));
+        
+        Final fa = new Final(idAlumno, id_Materia, nota);
+        
+        f.agregarFinal(id, fa);
+        OBSERVER.setChanged();
+        OBSERVER.notifyObservers(fa);
+        this.actualizarCombo();
+	}
+	
+	private void actualizarCombo()
+	{
+	    FinalesDao f = new FinalesDao();
+        DefaultComboBoxModel<String> modelo = new DefaultComboBoxModel<>();
+        modelo = ConversorResultSetACDefaultComboBox.llenarCombo(f.mostrarFinales(idAlumno), modelo);
+        this.comboBox.setModel(modelo);
 	}
 	
 	private int getIdAlumno()
@@ -129,12 +156,10 @@ public class FormularioAgregarFinal extends JFrame implements ActionListener
 	    return idAlumno;
 	}
 	
-	
-	private void setIdAlumno(int idAlumno)
-	{
-	    this.idAlumno = idAlumno;
-	}
-	
+	public static finalObservable getObserver()
+    {
+        return OBSERVER;
+    }
 	
 	private String getNombre()
 	{
@@ -146,6 +171,4 @@ public class FormularioAgregarFinal extends JFrame implements ActionListener
 	{
 	    Nombre = nombre;
 	}
-
-
 }
