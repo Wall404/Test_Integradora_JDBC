@@ -98,6 +98,7 @@ public class FinalesService
 			
 			String queryStr = "SELECT " 
 					          + "	F.ID as ID "
+					          + ",  A.ID as ID_A"
 					          + ",  A.APEL_NOMBRE "
 					          + ",   M.ID AS ID_MATERIA"
 					          + ", 	M.DESCRIPCION AS DESCRIPCION_MATERIA"
@@ -128,6 +129,7 @@ public class FinalesService
 					   f.setId_materia(rs.getInt("ID_MATERIA"));
 					   f.setDescripcion_materia(rs.getString("DESCRIPCION_MATERIA"));
 					   f.setNota(rs.getFloat("NOTA"));
+					   f.setDeleteURL("./borrarFinal?ID_ALUMNO=" + rs.getInt("ID_A") + "&ID_MATERIA=" + rs.getInt("ID_MATERIA"));
 					   resultado.add(f);
 				   }
 				   
