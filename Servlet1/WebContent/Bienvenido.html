@@ -1,0 +1,62 @@
+<html>
+	<head>
+		<title>Mi primer Formulario con Servlet</title>
+	</head>
+<body bgcolor='white'>
+<table style="width: 100%;">
+	<tr bgcolor='#CCCCFF' align='center' valign= 'middle' height='20'>
+		<td><h3>UNPAZ - PRACTICA INTEGRADORA - EJEMPLO FORMULARIO CON SERVLET </h3></td>
+	</tr>
+</table>
+
+<form name="formu" action="login.do" method="get">
+	<table>
+		<tr>
+			<td bgcolor="#CCCCCC" align="center" colspan="2">
+				<b>LOGIN</b>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">
+				<b>Usuario:</b>&nbsp;
+			</td>
+			<td align="left">
+				<input type="text" maxlength="14" name="usu_form">&nbsp;
+			</td>
+		</tr>
+		<tr>
+			<td align="right">
+				&nbsp;<b>Pasword:</b>&nbsp;
+			</td>
+			<td align="left">
+				<input type="password" maxlength="14" name="pass_form">&nbsp;
+			</td>
+		</tr>
+		<tr>
+			<td align="right">
+				&nbsp;<b>Perfil:</b>&nbsp;
+			</td>
+			<td align="left">
+				<select name ='perfil'>
+					<option value='Estudiante'>Estudiante</option>
+					<option value='Estudiante'>Profesor</option>
+					<option value='Estudiante'>Administrador</option>
+				</select>&nbsp;
+			</td>
+		</tr>		
+		
+		<tr>
+			<td>
+
+			</td>
+			<td align="right">
+				<input type="reset" value="Borrar">
+				<input type="submit" value="Enviar">
+			</td>
+
+		</tr>
+
+</table>
+	</form>
+</body>
+</html>
